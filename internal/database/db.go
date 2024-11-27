@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/ruanv123/acme-hotel-api/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -49,5 +50,5 @@ func autoMigrate(db *gorm.DB) error {
 		log.Fatal("Failed to drop tables: ", err)
 	}
 	return db.AutoMigrate(&models.SubmissionLandmark{}, &models.SubmissionLandmarkDetail{}, &models.SubmissionLandmarkImage{})*/
-	return db.AutoMigrate()
+	return db.AutoMigrate(&models.User{})
 }
