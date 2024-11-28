@@ -3,14 +3,30 @@ services:
     image: postgres:15
     container_name: postgres_container
     ports:
-      - "5432:5432" 
+      - "5432:5432"
     environment:
-      POSTGRES_USER: admin 
-      POSTGRES_PASSWORD: admin 
-      POSTGRES_DB: mydatabase 
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: mydatabase
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com # E-mail de login no PgAdmin
+      PGADMIN_DEFAULT_PASSWORD: admin # Senha de login no PgAdmin
+    ports:
+      - "8080:80" # Porta do PgAdmin
+    depends_on:
+      - postgres # Garante que o PostgreSQL estará disponível antes
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
 volumes:
   postgres_data:
+    driver: local
+  pgadmin_data:
     driver: local

@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 	"github.com/ruanv123/acme-hotel-api/internal/api/handlers"
 	"github.com/ruanv123/acme-hotel-api/internal/database"
 	"github.com/ruanv123/acme-hotel-api/internal/logger"
@@ -56,9 +57,38 @@ func main() {
 
 	// public routes
 	router.HandleFunc("/auth/register", authHandler.Register).Methods("POST")
+	router.HandleFunc("/auth/login", authHandler.Login).Methods("POST")
+
+	// API routes (protected)
+	// apiRouter := router.PathPrefix("/api/v1").Subrouter()
+
+	corsMiddleware := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"}, // Allow all origins
+		AllowedMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPut,
+			http.MethodPatch,
+			http.MethodDelete,
+			http.MethodOptions,
+		},
+		AllowedHeaders: []string{
+			"Accept",
+			"Authorization",
+			"Content-Type",
+			"X-CSRF-Token",
+			"X-API-Key",
+			"*", // Allow all headers
+		},
+		ExposedHeaders: []string{
+			"Link",
+		},
+		AllowCredentials: false, // Must be false when using AllowedOrigins: ["*"]
+		MaxAge:           300,
+	})
 
 	srv := &http.Server{
-		Handler:      router,
+		Handler:      corsMiddleware.Handler(router),
 		Addr:         ":" + getPort(),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -69,7 +99,6 @@ func main() {
 		"port": "8080",
 	})
 	log.Fatal(srv.ListenAndServe())
-
 }
 
 func getPort() string {

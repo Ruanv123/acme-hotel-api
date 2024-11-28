@@ -15,8 +15,9 @@ type Guest struct {
 	Telefone    string    `gorm:"type:varchar(15);not null" json:"telefone"`
 	Email       string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"email"`
 	Observacoes string    `gorm:"type:text;not null" json:"observacoes"`
-	CreatedAt   time.Time `gorm:"not null;default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt   time.Time `gorm:"not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
+
+	CreatedAt time.Time `gorm:"not null;default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time `gorm:"not null;default:CURRENT_TIMESTAMP" json:"updated_at"`
 }
 
 func (g *Guest) BeforeCreate(tx *gorm.DB) error {
