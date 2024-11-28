@@ -19,6 +19,7 @@ import (
 )
 
 func main() {
+	// carregando as variáveis de ambiente
 	if err := godotenv.Load(); err != nil {
 		log.Printf("Warning: error loading .env file: %s\n", err)
 	}
@@ -29,6 +30,7 @@ func main() {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
+	// gerando a conexão com o banco
 	sqlDB, err := db.DB()
 	if err != nil {
 		log.Fatal("Failed to get underlying *sql.DB instance:", err)
@@ -38,6 +40,7 @@ func main() {
 	sqlDB.SetMaxIdleConns(25)
 	sqlDB.SetConnMaxLifetime(5 * time.Minute)
 
+	// instanciando os repositórios
 	userRepo := repository.NewUserRepository(db)
 
 	jwtSecret := os.Getenv("JWT_SECRET")
