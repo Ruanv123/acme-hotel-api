@@ -63,7 +63,11 @@ func main() {
 	router.HandleFunc("/auth/login", authHandler.Login).Methods("POST")
 
 	// API routes (protected)
-	// apiRouter := router.PathPrefix("/api/v1").Subrouter()
+	apiRouter := router.PathPrefix("/api/v1").Subrouter()
+	apiRouter.Use(middleware.AuthMiddleware(authService))
+
+	// user routes
+	apiRouter.HandleFunc("/me", authHandler.CheckUser).Methods("GET")
 
 	corsMiddleware := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"}, // Allow all origins

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/ruanv123/acme-hotel-api/internal/service"
@@ -29,10 +30,6 @@ type registrationResponse struct {
 		Email string `json:"email"`
 	}
 	Error string `json:"error,omitempty"`
-}
-
-type emailRegistrationRequest struct {
-	Email string `json:"email"`
 }
 
 type loginRequest struct {
@@ -101,6 +98,33 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)
+}
+
+type checkResponse struct {
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	Role        string `json:"role"`
+	AccessToken string `json:"accessToken"`
+}
+
+func (h *AuthHandler) CheckUser(w http.ResponseWriter, r *http.Request) {
+	user, ok := service.UserFromContext(r.Context())
+	if !ok {
+		http.Error(w, "Error processing your request", http.StatusForbidden)
+		return
+	}
+
+	fmt.Print("User API keys fetched successfully.")
+
+	resp := checkResponse{}
+
+	resp.Name = user.Name
+	resp.Email = user.Email
+	resp.Role = user.Role
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
+
 }
 
 func (h *AuthHandler) ValidateToken(w http.ResponseWriter, r *http.Request) {
